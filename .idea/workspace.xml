@@ -31,6 +31,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
@@ -41,13 +42,13 @@
     <option name="myPythonConsoleState">
       <console-settings module-name="DiscordBot" is-module-sdk="true">
         <envs>
-          <env key="TOKEN" value="MTIwNDU1NTIyMTU5NDkzNTQwNg.G3uwh7.QsinB9FOqyAim6N3sIhz1fAdLqgTVkVK6UteaQ" />
+          <env key="TOKEN" value="MTIwNDU1NTIyMTU5NDkzNTQwNg.Gt8lHX.Inch1Ax-2InFOWIEgI0vTj6jpA0DWx_BnF-Di8" />
         </envs>
         <option name="myUseModuleSdk" value="true" />
         <option name="myModuleName" value="DiscordBot" />
         <option name="myEnvs">
           <map>
-            <entry key="TOKEN" value="MTIwNDU1NTIyMTU5NDkzNTQwNg.G3uwh7.QsinB9FOqyAim6N3sIhz1fAdLqgTVkVK6UteaQ" />
+            <entry key="TOKEN" value="MTIwNDU1NTIyMTU5NDkzNTQwNg.Gt8lHX.Inch1Ax-2InFOWIEgI0vTj6jpA0DWx_BnF-Di8" />
           </map>
         </option>
       </console-settings>
