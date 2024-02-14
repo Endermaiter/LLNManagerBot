@@ -1,6 +1,8 @@
 #!/usr/bin/env python3.10
 
 import datetime
+import os
+
 import discord
 from discord.ext import commands
 
@@ -41,6 +43,9 @@ async def participantes(ctx):
     abdiel = "\nAbdiel        stoyknsadojefe  Hierro 1  MID"
     pepis = "\nEl Pepis      unix989         Oro 2     BOT/ TOP"
     ferroviario = "\nFerroviario   Ferroviario     Bronce 4  BOT/TOP"
+    url_image = "https://cdn.discordapp.com/attachments/1027500125670604843/1205254709179449394/image.png?ex=65d7b3eb&is=65c53eeb&hm=e0bda835cd7be084aa7f5b1d29a34b5ff86d50236ba6ac9142bde6d2df45fe6e&"
+    url_icon = "https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65d394ca&is=65c11fca&hm=c3c76a99234ad5b7c582c8f0153fc584a8433e54bfcb787a5ced69d694fc4566&"
+
     embed = discord.Embed(title="Participantes del torneo",
                           description="```" +
                                       header +
@@ -62,16 +67,17 @@ async def participantes(ctx):
                                       daniR +
                                       abdiel +
                                       pepis +
-                                      ferroviario + "\n```",
+                                      ferroviario +
+                                      "\n```",
                           colour=0xff0000,
                           timestamp=datetime.datetime.now())
     embed.set_author(name="Hola {ctx.user}!")
     embed.set_image(
-        url="https://cdn.discordapp.com/attachments/1027500125670604843/1205254709179449394/image.png?ex=65d7b3eb&is=65c53eeb&hm=e0bda835cd7be084aa7f5b1d29a34b5ff86d50236ba6ac9142bde6d2df45fe6e&")
+        url=url_image)
     embed.set_footer(text="LLN Manager",
-                     icon_url="https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65d394ca&is=65c11fca&hm=c3c76a99234ad5b7c582c8f0153fc584a8433e54bfcb787a5ced69d694fc4566&")
+                     icon_url=url_icon)
+
     await ctx.send(embed=embed)
 
 # Discord bot up
-discord_token = "MTIwNDU1NTIyMTU5NDkzNTQwNg.GC2nl9.eJzYlsgSB9n_x0mPLBeqZkpYWlzY1nEPabdqVU"
-bot.run(discord_token)
+bot.run(os.environ["TOKEN"])
