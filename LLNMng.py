@@ -5,6 +5,7 @@ import os
 import io
 
 import discord
+import pytz
 import requests
 from bs4 import BeautifulSoup
 from discord import Emoji
@@ -13,7 +14,8 @@ from urllib.parse import urlparse
 import aiohttp
 from pathlib import Path
 from opgg.opgg import OPGG
-from opgg.summoner import Summoner
+from opgg.summoner import Summoner, ChampionStats
+from opgg import champion
 from opgg.params import Region
 
 # Discord bot preconfiguration
@@ -123,71 +125,107 @@ async def equipos(ctx):
 
 @bot.command()
 async def lol(ctx, search: str, hastag: str, region: str):
-    opgg = OPGG(region=region)
-    checkHastag = True
-    searchEdited = search.replace("-", " ")
-    if hastag.__contains__("#"):
-        hastag = hastag.replace("#", "")
-    else:
-        checkHastag = False
-        await ctx.send("El hastag debe contener '#' al principcio")
-
-    if opgg.cached_page_props:
-        page_props = opgg.cached_page_props
-    else:
-        page_props = opgg.get_page_props(searchEdited, region)
-        opgg.cached_page_props = page_props
-
-    opgg.get_all_seasons(region, page_props)
-    opgg.get_all_champions(region, page_props)
-    summoner = Summoner
-    for id in page_props['summoners']:
-        opgg.summoner_id = id["summoner_id"]
-        summoner = opgg.get_summoner()
-
-    summoner_name = summoner.level
-    profile_image = summoner.profile_image_url
-    summoner_level = summoner.level
-    stats = summoner.league_stats
-
-    # Indexando la lista de stats
-    first_three_league_stats = stats[:3]
-    eloTier = [league_stats.tier_info.tier for league_stats in first_three_league_stats]
-    eloDivision = [league_stats.tier_info.division for league_stats in first_three_league_stats]
-    eloLPs = [league_stats.tier_info.lp for league_stats in first_three_league_stats]
-    win = [league_stats.win for league_stats in first_three_league_stats]
-    lose = [league_stats.lose for league_stats in first_three_league_stats]
-
-    if summoner_name == "":
-        await ctx.send("El jugador no existe, intentalo de nuevo")
-    elif checkHastag:
-        if search.__contains__("-"):
-            urlSearch = search.replace("-", "%20")
+    try:
+        opgg = OPGG(region=region)
+        checkHastag = True
+        searchEdited = search.replace("-", " ")
+        if hastag.__contains__("#"):
+            hastag = hastag.replace("#", "")
         else:
-            urlSearch = search
-        urlOPGG = f"https://www.op.gg/summoners/{region.lower()}/{urlSearch}-{hastag}"
-        gamesRankedSolo = win[0] + lose[0]
-        gamesRankedFlex = win[1] + lose[1]
-        winRateSolo = (win[0] / gamesRankedSolo) * 100
-        winRateFlex = (win[1] / gamesRankedFlex) * 100
-        separation = "‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎"
-        embed = discord.Embed(title=search.replace("-", " ") + " #" + hastag,
-                              url=urlOPGG,
-                              description="> Nivel: " + str(summoner_level))
-        embed.add_field(name="\n‎", value="", inline=False)
-        embed.add_field(name="Ranked Solo/Duo" + separation + separation,
-                        value="`" + eloTier[0] + " " + str(eloDivision[0]) + "` | **" + str(eloLPs[0]) + "** LPs\n" +
-                              str(gamesRankedSolo) + "G " + str(win[0]) + "W " + str(lose[0]) + "L || WR -> " + str(
-                            round(winRateSolo, 2)) + "% ", inline=True)
-        embed.add_field(name="Ranked Flex",
-                        value="`" + eloTier[1] + " " + str(eloDivision[1]) + "` | **" + str(eloLPs[1]) + "** LPs\n" +
-                              str(gamesRankedFlex) + "G " + str(win[0]) + "W " + str(lose[0]) + "L || WR -> " + str(
-                            round(winRateFlex, 2)) + "% ", inline=True)
-        embed.add_field(name="\n‎", value="", inline=False)
-        embed.add_field(name="Campeon mas usado", value="", inline=False)
-        embed.add_field(name="Historial de partida", value="", inline=True)
-        embed.set_thumbnail(url=profile_image)
-        await ctx.send(embed=embed)
+            checkHastag = False
+            await ctx.send("El hastag debe contener '#' al principcio")
+
+        if opgg.cached_page_props:
+            page_props = opgg.cached_page_props
+        else:
+            page_props = opgg.get_page_props(searchEdited, region)
+            opgg.cached_page_props = page_props
+
+        opgg.get_all_seasons(region, page_props)
+        opgg.get_all_champions(region, page_props)
+        summoner = Summoner
+        for id in page_props['summoners']:
+            opgg.summoner_id = id["summoner_id"]
+            summoner = opgg.get_summoner()
+
+        summoner_name = summoner.level
+        profile_image = summoner.profile_image_url
+        summoner_level = summoner.level
+        stats = summoner.league_stats
+        champs = summoner.most_champions
+        champName = champion.Champion.name
+        seasons = summoner.previous_seasons
+        recentGames = summoner.recent_game_stats
+        renewableAt = summoner.renewable_at
+
+        # Last updated timestamp
+        updatedWithoutFormat = summoner.updated_at
+        date = datetime.datetime.fromisoformat(str(updatedWithoutFormat))
+        updateTimeStamp = date.strftime("%d/%m/%Y %H:%M:%S")
+        print(champs)
+        print(champName)
+        print(seasons)
+        print(recentGames)
+        print(renewableAt)
+        # Indexando la lista de stats
+        first_three_league_stats = stats[:3]
+        eloTier = [league_stats.tier_info.tier for league_stats in first_three_league_stats]
+        eloDivision = [league_stats.tier_info.division for league_stats in first_three_league_stats]
+        eloLPs = [league_stats.tier_info.lp for league_stats in first_three_league_stats]
+        win = [league_stats.win for league_stats in first_three_league_stats]
+        lose = [league_stats.lose for league_stats in first_three_league_stats]
+
+        if summoner_name == "":
+            await ctx.send("El jugador no existe, intentalo de nuevo")
+        elif checkHastag:
+            if search.__contains__("-"):
+                urlSearch = search.replace("-", "%20")
+            else:
+                urlSearch = search
+            urlOPGG = f"https://www.op.gg/summoners/{region.lower()}/{urlSearch}-{hastag}"
+            gamesRankedSolo = win[0] + lose[0]
+            gamesRankedFlex = win[1] + lose[1]
+            winRateSolo = (win[0] / gamesRankedSolo) * 100
+            winRateFlex = (win[1] / gamesRankedFlex) * 100
+            separation = "‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎"
+            embed = discord.Embed(title=search.replace("-", " ") + " #" + hastag,
+                                  url=urlOPGG,
+                                  description="> Nivel: " + str(summoner_level))
+            embed.add_field(name="\n‎", value="", inline=False)
+            if eloTier[0] is None or eloDivision[0] is None or eloLPs[0] is None:
+                embed.add_field(name="Ranked Solo/Duo" + separation + separation,
+                                value="`UNRANKED`\n" +
+                                      str(gamesRankedSolo) + "G " + str(win[0]) + "W " + str(
+                                    lose[0]) + "L ║ WR -> " + str(
+                                    round(winRateSolo, 2)) + "% ", inline=True)
+            else:
+                embed.add_field(name="Ranked Solo/Duo" + separation + separation,
+                                value="`" + str(eloTier[0]) + " " + str(eloDivision[0]) + "` - **" + str(
+                                    eloLPs[0]) + "** LPs\n" +
+                                      str(gamesRankedSolo) + "G " + str(win[0]) + "W " + str(
+                                    lose[0]) + "L ║ WR -> " + str(
+                                    round(winRateSolo, 2)) + "% ", inline=True)
+            if eloTier[1] is None or eloDivision[1] is None or eloLPs[1] is None:
+                embed.add_field(name="Ranked Flex",
+                                value="`UNRANKED`\n" +
+                                      str(gamesRankedFlex) + "G " + str(win[0]) + "W " + str(
+                                    lose[0]) + "L ║ WR -> " + str(
+                                    round(winRateFlex, 2)) + "% ", inline=True)
+            else:
+                embed.add_field(name="Ranked Flex",
+                                value="`" + str(eloTier[1]) + " " + str(eloDivision[1]) + "` - **" + str(
+                                    eloLPs[1]) + "** LPs\n" +
+                                      str(gamesRankedFlex) + "G " + str(win[0]) + "W " + str(
+                                    lose[0]) + "L ║ WR -> " + str(
+                                    round(winRateFlex, 2)) + "% ", inline=True)
+            embed.add_field(name="\n‎", value="", inline=False)
+            embed.add_field(name="Campeon mas usado", value="", inline=False)
+            embed.add_field(name="Historial de partida", value="", inline=True)
+            embed.set_thumbnail(url=profile_image)
+            embed.set_footer(text="Última actualización de datos: "+updateTimeStamp)
+            await ctx.send(embed=embed)
+    except Exception as e:
+        await ctx.send("No se ha encontrado al jugador, vuelve a intentarlo")
 
 
 # Discord bot up
