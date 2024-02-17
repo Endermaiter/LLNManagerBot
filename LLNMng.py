@@ -5,18 +5,12 @@ import os
 import io
 
 import discord
-import pytz
-import requests
-from bs4 import BeautifulSoup
-from discord import Emoji
 from discord.ext import commands
 from urllib.parse import urlparse
 import aiohttp
 from pathlib import Path
 from opgg.opgg import OPGG
-from opgg.summoner import Summoner, ChampionStats
-from opgg import champion
-from opgg.params import Region
+from opgg.summoner import Summoner
 
 # Discord bot preconfiguration
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -27,6 +21,35 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 async def on_ready():
     print(f"Conectado como: {bot.user}")
 
+
+@bot.command()
+async def helpLLN(ctx):
+    embed = discord.Embed(title="Guia de comandos de LLN", description="")
+    embed.add_field(name="`!participantes`", value="Muestra la lista de todos los participantes del torneo.", inline=False)
+    embed.add_field(name="`!equipos`", value="Muestra la imagen oficial de todos los equipos que conforman el torneo, asi como sus respectivos capitanes.", inline=False)
+    embed.add_field(name="`!lol invocador hastag region`", value="Muestra algunas estadisticas del jugador y proporciona el enlace a su **op.gg**\n"
+                                                                 "- `invocador`: \n"
+                                                                 "   Nombre de invocador del jugador. Si el nombre que deseas introducir tiene espacios, por favor, añade '-' para separar las palabras. \n"
+                                                                 "   (Ej: Nombre -> ABC DEF -> ABC-DEF)\n"
+                                                                 "- `hastag`: \n"
+                                                                 "   Hastag del jugador. Debe contener el '#' al principio del mismo, seguido de 3/4 caracteres (Ej: #ABCD)\n"
+                                                                 "- `region`: \n"
+                                                                 "   Region donde la cuenta del jugador esté registrada. Posibles opciones:\n"
+                                                                 " - NA, EUW, BR, JP, KR, EUNE, LAN, LAS, OC, RU, TR", inline=False)
+    embed.add_field(name="`!redes`", value="Muestra las redes oficiales de LLN", inline=False)
+    embed.add_field(name="`!otaku`", value="Boca chango, simplemente", inline=False)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65dccf4a&is=65ca5a4a&hm=c3e6aebfdf01fabe2a9211301e9401456bd8a56b7337a7949f8b5cf7bcd86318&")
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def redes(ctx):
+    embed = discord.Embed(title="Redes Sociales de LLN", description="")
+    embed.add_field(name="Instagram", value="- 📷 | [@la_liga_del_norte](https://www.instagram.com/la_liga_del_norte/)", inline=False)
+    embed.add_field(name="Twitter", value="- ‎ ‎𝕏 ‎ | [@la_liga_del_norte](https://twitter.com/liga_del_norte)", inline=False)
+    embed.add_field(name="Twitch", value="- 🔴 | [@laligadelnorte](https://www.twitch.tv/laligadelnorte)", inline=False)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65dccf4a&is=65ca5a4a&hm=c3e6aebfdf01fabe2a9211301e9401456bd8a56b7337a7949f8b5cf7bcd86318&")
+    embed.set_image(url="https://socialblade.com/blog/wp-content/uploads/2017/07/social-blade-adds-twitter-instagram-twitch.jpg")
+    await ctx.send(embed=embed)
 
 # List of players command
 @bot.command()
@@ -41,7 +64,7 @@ async def participantes(ctx):
               "\n**Nombre DC**‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
               "**Nombre Riot**‎‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
               "**ELO**‎‎ ‎ ‎ ‎ ‎ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ "
-              "**Posición**\n---------------------------------------------------------------------\n")
+              "**Posición**\n¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n")
     roicetee = "\nRoicetee      MNC Roicetee    Hierro 1  JGL/SUPP"
     endermaiter = "\nEndermaiter   Endermaiter     Oro 1     ADC/TOP"
     alex = "\nalex132       alex132mini     Plata 3   TOP/JGL"
@@ -124,6 +147,19 @@ async def equipos(ctx):
 
 
 @bot.command()
+async def otaku(ctx):
+    url = "https://cdn.discordapp.com/attachments/1027500125670604843/1208458086495420507/SaveTube.App-Caballo_habla_como_mona_china_entrevista-1080p60.mp4?ex=65e35b4b&is=65d0e64b&hm=6fff917e323357dfb07b83e3084b4d8fd73ab6b952774dcb1ecd7b61e0cf0d06&"
+    img_name = Path(urlparse(url).path).name
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            buffer = io.BytesIO(await resp.read())
+            buffer.seek(0)
+            file = discord.File(buffer, filename=img_name)
+    await ctx.send(file=file)
+
+
+@bot.command()
 async def lol(ctx, search: str, hastag: str, region: str):
     try:
         opgg = OPGG(region=region)
@@ -152,29 +188,31 @@ async def lol(ctx, search: str, hastag: str, region: str):
         profile_image = summoner.profile_image_url
         summoner_level = summoner.level
         stats = summoner.league_stats
-        champs = summoner.most_champions
-        champName = champion.Champion.name
         seasons = summoner.previous_seasons
         recentGames = summoner.recent_game_stats
-        renewableAt = summoner.renewable_at
-
         # Last updated timestamp
         updatedWithoutFormat = summoner.updated_at
         date = datetime.datetime.fromisoformat(str(updatedWithoutFormat))
         updateTimeStamp = date.strftime("%d/%m/%Y %H:%M:%S")
-        print(champs)
-        print(champName)
-        print(seasons)
-        print(recentGames)
-        print(renewableAt)
         # Indexando la lista de stats
-        first_three_league_stats = stats[:3]
-        eloTier = [league_stats.tier_info.tier for league_stats in first_three_league_stats]
-        eloDivision = [league_stats.tier_info.division for league_stats in first_three_league_stats]
-        eloLPs = [league_stats.tier_info.lp for league_stats in first_three_league_stats]
-        win = [league_stats.win for league_stats in first_three_league_stats]
-        lose = [league_stats.lose for league_stats in first_three_league_stats]
-
+        statsIndexed = stats[:3]
+        eloTier = [league_stats.tier_info.tier for league_stats in statsIndexed]
+        eloDivision = [league_stats.tier_info.division for league_stats in statsIndexed]
+        eloLPs = [league_stats.tier_info.lp for league_stats in statsIndexed]
+        win = [league_stats.win for league_stats in statsIndexed]
+        lose = [league_stats.lose for league_stats in statsIndexed]
+        # Indexando la lista de games
+        gamesIndexed = recentGames[:10]
+        kills = [game_stats.kill for game_stats in gamesIndexed]
+        deaths = [game_stats.death for game_stats in gamesIndexed]
+        assists = [game_stats.assist for game_stats in gamesIndexed]
+        positions = [game_stats.position for game_stats in gamesIndexed]
+        is_win = [game_stats.is_win for game_stats in gamesIndexed]
+        # Indexando la lista de games
+        seasonsIndexed = seasons[:10]
+        seasonTier = [season_stats.tier_info.tier for season_stats in seasonsIndexed]
+        seasonDivision = [season_stats.tier_info.division for season_stats in seasonsIndexed]
+        seasonLPs = [season_stats.tier_info.lp for season_stats in seasonsIndexed]
         if summoner_name == "":
             await ctx.send("El jugador no existe, intentalo de nuevo")
         elif checkHastag:
@@ -187,11 +225,11 @@ async def lol(ctx, search: str, hastag: str, region: str):
             gamesRankedFlex = win[1] + lose[1]
             winRateSolo = (win[0] / gamesRankedSolo) * 100
             winRateFlex = (win[1] / gamesRankedFlex) * 100
-            separation = "‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎"
+            separation = "‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎‎ ‎‎"
             embed = discord.Embed(title=search.replace("-", " ") + " #" + hastag,
                                   url=urlOPGG,
                                   description="> Nivel: " + str(summoner_level))
-            embed.add_field(name="\n‎", value="", inline=False)
+            embed.add_field(name="\n‎", value="\n‎", inline=False)
             if eloTier[0] is None or eloDivision[0] is None or eloLPs[0] is None:
                 embed.add_field(name="Ranked Solo/Duo" + separation + separation,
                                 value="`UNRANKED`\n" +
@@ -215,17 +253,43 @@ async def lol(ctx, search: str, hastag: str, region: str):
                 embed.add_field(name="Ranked Flex",
                                 value="`" + str(eloTier[1]) + " " + str(eloDivision[1]) + "` - **" + str(
                                     eloLPs[1]) + "** LPs\n" +
-                                      str(gamesRankedFlex) + "G " + str(win[0]) + "W " + str(
-                                    lose[0]) + "L ║ WR -> " + str(
+                                      str(gamesRankedFlex) + "G " + str(win[1]) + "W " + str(
+                                    lose[1]) + "L ║ WR -> " + str(
                                     round(winRateFlex, 2)) + "% ", inline=True)
             embed.add_field(name="\n‎", value="", inline=False)
-            embed.add_field(name="Campeon mas usado", value="", inline=False)
-            embed.add_field(name="Historial de partida", value="", inline=True)
+            embed.add_field(name="Historial de partida (Solo/Duo)", value="Ultimas 10 partidas", inline=True)
+
+            contadorVictorias = 0
+            contadorDerrotas = 0
+            for i in range(0, len(gamesIndexed)):
+                if is_win[i]:
+                    embed.add_field(name="",
+                                    value="🔵 | `" + str(kills[i]) + "/" + str(deaths[i]) + "/" + str(
+                                        assists[i]) + "` - " + str(positions[i]),
+                                    inline=False)
+                    contadorVictorias = contadorVictorias + 1
+                else:
+                    embed.add_field(name="",
+                                    value="🔴 | `" + str(kills[i]) + "/" + str(deaths[i]) + "/" + str(
+                                        assists[i]) + "` - " + str(positions[i]),
+                                    inline=False)
+                    contadorDerrotas = contadorDerrotas + 1
+            embed.add_field(name="Resumen: 10G " + str(contadorVictorias) + "W " + str(contadorDerrotas) + "L",
+                            value="")
+            embed.add_field(name="\n‎", value="", inline=False)
+            embed.add_field(name="Ultimas seasons (Solo/Duo)", value="", inline=False)
+            contadorSeasons = 13
+            for i in range(0, len(seasonsIndexed)):
+                embed.add_field(name="", value="Season: " + str(contadorSeasons) +
+                                               " - `" + str(seasonTier[i]) + " " + str(seasonDivision[i]) +
+                                               "` | **" + str(seasonLPs[i]) + "** LPs", inline=False)
+                contadorSeasons = contadorSeasons - 1
             embed.set_thumbnail(url=profile_image)
-            embed.set_footer(text="Última actualización de datos: "+updateTimeStamp)
+            embed.set_footer(text="Última actualización de datos: " + updateTimeStamp)
             await ctx.send(embed=embed)
     except Exception as e:
-        await ctx.send("No se ha encontrado al jugador, vuelve a intentarlo")
+        await ctx.send(f"No se ha encontrado al jugador, vuelve a intentarlo"
+                       f"\nPython debugging (Beta): {e}")
 
 
 # Discord bot up
