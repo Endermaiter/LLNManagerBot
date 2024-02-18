@@ -25,31 +25,42 @@ async def on_ready():
 @bot.command()
 async def helpLLN(ctx):
     embed = discord.Embed(title="Guia de comandos de LLN", description="")
-    embed.add_field(name="`!participantes`", value="Muestra la lista de todos los participantes del torneo.", inline=False)
-    embed.add_field(name="`!equipos`", value="Muestra la imagen oficial de todos los equipos que conforman el torneo, asi como sus respectivos capitanes.", inline=False)
-    embed.add_field(name="`!lol invocador hastag region`", value="Muestra algunas estadisticas del jugador y proporciona el enlace a su **op.gg**\n"
-                                                                 "- `invocador`: \n"
-                                                                 "   Nombre de invocador del jugador. Si el nombre que deseas introducir tiene espacios, por favor, añade '-' para separar las palabras. \n"
-                                                                 "   (Ej: Nombre -> ABC DEF -> ABC-DEF)\n"
-                                                                 "- `hastag`: \n"
-                                                                 "   Hastag del jugador. Debe contener el '#' al principio del mismo, seguido de 3/4 caracteres (Ej: #ABCD)\n"
-                                                                 "- `region`: \n"
-                                                                 "   Region donde la cuenta del jugador esté registrada. Posibles opciones:\n"
-                                                                 " - NA, EUW, BR, JP, KR, EUNE, LAN, LAS, OC, RU, TR", inline=False)
+    embed.add_field(name="`!participantes`", value="Muestra la lista de todos los participantes del torneo.",
+                    inline=False)
+    embed.add_field(name="`!equipos`",
+                    value="Muestra la imagen oficial de todos los equipos que conforman el torneo, asi como sus respectivos capitanes.",
+                    inline=False)
+    embed.add_field(name="`!lol invocador hastag region`",
+                    value="Muestra algunas estadisticas del jugador y proporciona el enlace a su **op.gg**\n"
+                          "- `invocador`: \n"
+                          "   Nombre de invocador del jugador. Si el nombre que deseas introducir tiene espacios, por favor, añade '-' para separar las palabras. \n"
+                          "   (Ej: Nombre -> ABC DEF -> ABC-DEF)\n"
+                          "- `hastag`: \n"
+                          "   Hastag del jugador. Debe contener el '#' al principio del mismo, seguido de 3/4 caracteres (Ej: #ABCD)\n"
+                          "- `region`: \n"
+                          "   Region donde la cuenta del jugador esté registrada. Posibles opciones:\n"
+                          " - NA, EUW, BR, JP, KR, EUNE, LAN, LAS, OC, RU, TR", inline=False)
     embed.add_field(name="`!redes`", value="Muestra las redes oficiales de LLN", inline=False)
     embed.add_field(name="`!otaku`", value="Boca chango, simplemente", inline=False)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65dccf4a&is=65ca5a4a&hm=c3e6aebfdf01fabe2a9211301e9401456bd8a56b7337a7949f8b5cf7bcd86318&")
+    embed.set_thumbnail(
+        url="https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65dccf4a&is=65ca5a4a&hm=c3e6aebfdf01fabe2a9211301e9401456bd8a56b7337a7949f8b5cf7bcd86318&")
     await ctx.send(embed=embed)
+
 
 @bot.command()
 async def redes(ctx):
     embed = discord.Embed(title="Redes Sociales de LLN", description="")
-    embed.add_field(name="Instagram", value="- 📷 | [@la_liga_del_norte](https://www.instagram.com/la_liga_del_norte/)", inline=False)
-    embed.add_field(name="Twitter", value="- ‎ ‎𝕏 ‎ | [@la_liga_del_norte](https://twitter.com/liga_del_norte)", inline=False)
+    embed.add_field(name="Instagram", value="- 📷 | [@la_liga_del_norte](https://www.instagram.com/la_liga_del_norte/)",
+                    inline=False)
+    embed.add_field(name="Twitter", value="- ‎ ‎𝕏 ‎ | [@la_liga_del_norte](https://twitter.com/liga_del_norte)",
+                    inline=False)
     embed.add_field(name="Twitch", value="- 🔴 | [@laligadelnorte](https://www.twitch.tv/laligadelnorte)", inline=False)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65dccf4a&is=65ca5a4a&hm=c3e6aebfdf01fabe2a9211301e9401456bd8a56b7337a7949f8b5cf7bcd86318&")
-    embed.set_image(url="https://socialblade.com/blog/wp-content/uploads/2017/07/social-blade-adds-twitter-instagram-twitch.jpg")
+    embed.set_thumbnail(
+        url="https://cdn.discordapp.com/attachments/844311976888893440/1204121772966944819/Imagen_de_WhatsApp_2023-11-10_a_las_10.png?ex=65dccf4a&is=65ca5a4a&hm=c3e6aebfdf01fabe2a9211301e9401456bd8a56b7337a7949f8b5cf7bcd86318&")
+    embed.set_image(
+        url="https://socialblade.com/blog/wp-content/uploads/2017/07/social-blade-adds-twitter-instagram-twitch.jpg")
     await ctx.send(embed=embed)
+
 
 # List of players command
 @bot.command()
@@ -213,6 +224,11 @@ async def lol(ctx, search: str, hastag: str, region: str):
         seasonTier = [season_stats.tier_info.tier for season_stats in seasonsIndexed]
         seasonDivision = [season_stats.tier_info.division for season_stats in seasonsIndexed]
         seasonLPs = [season_stats.tier_info.lp for season_stats in seasonsIndexed]
+
+        gamesRankedSolo = 0
+        gamesRankedFlex = 0
+        winRateSolo = 0
+        winRateFlex = 0
         if summoner_name == "":
             await ctx.send("El jugador no existe, intentalo de nuevo")
         elif checkHastag:
@@ -221,10 +237,54 @@ async def lol(ctx, search: str, hastag: str, region: str):
             else:
                 urlSearch = search
             urlOPGG = f"https://www.op.gg/summoners/{region.lower()}/{urlSearch}-{hastag}"
-            gamesRankedSolo = win[0] + lose[0]
-            gamesRankedFlex = win[1] + lose[1]
-            winRateSolo = (win[0] / gamesRankedSolo) * 100
-            winRateFlex = (win[1] / gamesRankedFlex) * 100
+            if win[0] is None and lose[0] is not None:
+                win[0] = 0
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = (win[0] / gamesRankedSolo) * 100
+                winRateFlex = (win[1] / gamesRankedFlex) * 100
+            elif win[0] is not None and lose[0] is None:
+                lose[0] = 0
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = (win[0] / gamesRankedSolo) * 100
+                winRateFlex = (win[1] / gamesRankedFlex) * 100
+            elif win[0] is None and lose[0] is None:
+                win[0] = 0
+                lose[0] = 0
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = 0
+                winRateFlex = (win[1] / gamesRankedFlex) * 100
+            elif win[1] is None and lose[1] is not None:
+                win[1] = 0
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = (win[0] / gamesRankedSolo) * 100
+                winRateFlex = (win[1] / gamesRankedFlex) * 100
+            elif win[1] is not None and lose[1] is None:
+                lose[1] = 0
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = (win[0] / gamesRankedSolo) * 100
+                winRateFlex = (win[1] / gamesRankedFlex) * 100
+            elif win[1] is None and lose[1] is None:
+                win[1] = 0
+                lose[1] = 0
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = (win[0] / gamesRankedSolo) * 100
+                winRateFlex = 0
+            elif win[0] is None and lose[0] is None and win[0] is None and lose[0] is None:
+                win[0] = 0
+                lose[0] = 0
+                win[1] = 0
+                lose[1] = 0
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = 0
+                winRateFlex = 0
+
             separation = "‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎‎ ‎‎"
             embed = discord.Embed(title=search.replace("-", " ") + " #" + hastag,
                                   url=urlOPGG,
@@ -274,8 +334,10 @@ async def lol(ctx, search: str, hastag: str, region: str):
                                         assists[i]) + "` - " + str(positions[i]),
                                     inline=False)
                     contadorDerrotas = contadorDerrotas + 1
-            embed.add_field(name="Resumen: 10G " + str(contadorVictorias) + "W " + str(contadorDerrotas) + "L",
-                            value="")
+            contadorPartidas = contadorVictorias + contadorDerrotas
+            embed.add_field(name="Resumen: " + str(contadorPartidas) + "G " + str(contadorVictorias) + "W " + str(
+                contadorDerrotas) + "L",
+                            value="", inline=False)
             embed.add_field(name="\n‎", value="", inline=False)
             embed.add_field(name="Ultimas seasons (Solo/Duo)", value="", inline=False)
             contadorSeasons = 13
@@ -287,10 +349,11 @@ async def lol(ctx, search: str, hastag: str, region: str):
             embed.set_thumbnail(url=profile_image)
             embed.set_footer(text="Última actualización de datos: " + updateTimeStamp)
             await ctx.send(embed=embed)
+
     except Exception as e:
         await ctx.send(f"No se ha encontrado al jugador, vuelve a intentarlo"
                        f"\nPython debugging (Beta): {e}")
 
 
 # Discord bot up
-bot.run(os.environ["TOKEN"])
+bot.run(os.environ["TOKEN_TEST"])
