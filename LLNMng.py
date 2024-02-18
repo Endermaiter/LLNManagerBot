@@ -244,12 +244,14 @@ async def lol(ctx, search: str, hastag: str, region: str):
                 gamesRankedFlex = win[1] + lose[1]
                 winRateSolo = (win[0] / gamesRankedSolo) * 100
                 winRateFlex = (win[1] / gamesRankedFlex) * 100
+                print(1)
             elif win[0] is not None and lose[0] is None:
                 lose[0] = 0
                 gamesRankedSolo = win[0] + lose[0]
                 gamesRankedFlex = win[1] + lose[1]
                 winRateSolo = (win[0] / gamesRankedSolo) * 100
                 winRateFlex = (win[1] / gamesRankedFlex) * 100
+                print(2)
             elif win[0] is None and lose[0] is None:
                 win[0] = 0
                 lose[0] = 0
@@ -257,18 +259,21 @@ async def lol(ctx, search: str, hastag: str, region: str):
                 gamesRankedFlex = win[1] + lose[1]
                 winRateSolo = 0
                 winRateFlex = (win[1] / gamesRankedFlex) * 100
+                print(3)
             elif win[1] is None and lose[1] is not None:
                 win[1] = 0
                 gamesRankedSolo = win[0] + lose[0]
                 gamesRankedFlex = win[1] + lose[1]
                 winRateSolo = (win[0] / gamesRankedSolo) * 100
                 winRateFlex = (win[1] / gamesRankedFlex) * 100
+                print(4)
             elif win[1] is not None and lose[1] is None:
                 lose[1] = 0
                 gamesRankedSolo = win[0] + lose[0]
                 gamesRankedFlex = win[1] + lose[1]
                 winRateSolo = (win[0] / gamesRankedSolo) * 100
                 winRateFlex = (win[1] / gamesRankedFlex) * 100
+                print(5)
             elif win[1] is None and lose[1] is None:
                 win[1] = 0
                 lose[1] = 0
@@ -276,6 +281,7 @@ async def lol(ctx, search: str, hastag: str, region: str):
                 gamesRankedFlex = win[1] + lose[1]
                 winRateSolo = (win[0] / gamesRankedSolo) * 100
                 winRateFlex = 0
+                print(6)
             elif win[0] is None and lose[0] is None and win[0] is None and lose[0] is None:
                 win[0] = 0
                 lose[0] = 0
@@ -285,6 +291,13 @@ async def lol(ctx, search: str, hastag: str, region: str):
                 gamesRankedFlex = win[1] + lose[1]
                 winRateSolo = 0
                 winRateFlex = 0
+                print(7)
+            elif win[0] is not None and lose[0] is not None and win[1] is not None and lose[1] is not None:
+                gamesRankedSolo = win[0] + lose[0]
+                gamesRankedFlex = win[1] + lose[1]
+                winRateSolo = (win[0] / gamesRankedSolo) * 100
+                winRateFlex = (win[1] / gamesRankedFlex) * 100
+                print(8)
 
             separation = "‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎ ‎ ‎ ‎ ‎‎‎ ‎‎ ‎‎"
             embed = discord.Embed(title=search.replace("-", " ") + " #" + hastag,
