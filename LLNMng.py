@@ -39,7 +39,8 @@ async def helpLLN(ctx):
                           "   Hastag del jugador. Debe contener el '#' al principio del mismo, seguido de 3/4 caracteres (Ej: #ABCD)\n"
                           "- `region`: \n"
                           "   Region donde la cuenta del jugador esté registrada. Posibles opciones:\n"
-                          " - NA, EUW, BR, JP, KR, EUNE, LAN, LAS, OC, RU, TR", inline=False)
+                          " - NA, EUW, BR, JP, KR, EUNE, LAN, LAS, OC, RU, TR\n"
+                          "- Ejemplo: `!lol Endermaiter #FF15 EUW`", inline=False)
     embed.add_field(name="`!redes`", value="Muestra las redes oficiales de LLN", inline=False)
     embed.add_field(name="`!otaku`", value="Boca chango, simplemente", inline=False)
     embed.set_thumbnail(
@@ -75,7 +76,7 @@ async def participantes(ctx):
               "\n**Nombre DC**‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
               "**Nombre Riot**‎‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
               "**ELO**‎‎ ‎ ‎ ‎ ‎ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ "
-              "**Posición**\n¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n")
+              "**Posición**\n¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n")
     roicetee = "\nRoicetee      MNC Roicetee    Hierro 1  JGL/SUPP"
     endermaiter = "\nEndermaiter   Endermaiter     Oro 1     ADC/TOP"
     alex = "\nalex132       alex132mini     Plata 3   TOP/JGL"
